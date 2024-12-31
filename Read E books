@@ -1,0 +1,59 @@
+import json
+
+BOOKS_FILE = "books.json"
+
+def load_books():
+    try:
+        with open(BOOKS_FILE, "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_books(books):
+    with open(BOOKS_FILE, "w") as file:
+        json.dump(books, file, indent=4)
+
+def add_book(title, author, genre, year, read, rating):
+    books = load_books()
+    books.append({
+        "title": title,
+        "author": author,
+        "genre": genre,
+        "year": year,
+        "read": read,
+        "rating": rating
+    })
+    save_books(books)
+    print(f"Book '{title}' added successfully!")
+def search_books(keyword):
+    books = load_books()
+    results = [book for book in books if keyword.lower() in book["title"].lower()]
+    if results:
+        for book in results:
+            print(f"Title: {book['title']}, Author: {book['author']}")
+    else:
+        print("No books found.")
+
+def menu():
+    while True:
+        print("\n1. Add Book\n2. Search Books\n3. Exit")
+        choice = input("Choose an option: ")
+        if choice == "1":
+            title = input("Title: ")
+            author = input("Author: ")
+            genre = input("Genre: ")
+            year = input("Year: ")
+            read = input("Read (yes/no): ").lower() == "yes"
+            rating = input("Rating (1-5): ")
+            add_book(title, author, genre, year, read, int(rating))
+        elif choice == "2":
+            keyword = input("Search keyword: ")
+            search_books(keyword)
+        elif choice == "3":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice, try again.")
+
+
+
